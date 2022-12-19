@@ -10,16 +10,19 @@ html {
 }
 canvas {
   display: block;
-  background: radial-gradient(at top, #feffff, #a7cecc);
+  background-image: url("https://gameanalytics.com/wp-content/uploads/2019/08/Amanotes-Cover-1.png");
+  background-repeat: no-repeat;
+  height: 100vh;
+  background-size: cover;
+  width: 100vw;
 }
 
 .wrap {
   position: relative;
   display: flex;
   align-items: center;
-  width: 100%;
-  min-width: 350px;
-  border: 2rem ridge #333;
+  height: 100vh;
+  width: 100vw;
 }
 
 .btn {
@@ -27,43 +30,15 @@ canvas {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #333;
-  color: #afa;
-  border: 1px solid black;
+  background: #ffffff;
+  color: rgb(0, 0, 0);
   border-radius: 0.125rem;
   cursor: pointer;
   z-index: 10;
 }
 
 .btn--start {
-  top: 10%;
+  top: 5%;
   font-family: serif;
   font-weight: bold;
-}
-
-.cash,
-.bet {
-  position: absolute;
-  bottom: 15%;
-  left: 5%;
-  right: 5%;
-  padding: 1% 4%;
-  display: flex;
-  font: 24px monospace;
-  color: gold;
-  background: #000;
-  border-radius: 0.125rem;
-  border-right: 1rem solid #0f9;
-  border-left: 1rem solid #0f9;
-  box-shadow: inset 0 -2px 30px #0ff;
-}
-.bet {
-  bottom: 2%;
-}
-
-.valute {
-  margin-left: auto;
-  margin-right: 0.25rem;
-  color: lime;
-  font-family: serif;
 }

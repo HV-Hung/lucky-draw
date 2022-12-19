@@ -18,18 +18,18 @@ const adminLogin = asyncHandler(async (req, res) => {
 
   if (!match) return res.status(401).json({ message: "Unauthorized" });
 
+  // const accessToken = jwt.sign(
+  //   {
+  //     Info: {
+  //       email: foundAdmin.email,
+  //     },
+  //   },
+  //   process.env.ACCESS_TOKEN_SECRET
+  // );
+
   const accessToken = jwt.sign(
     {
-      Info: {
-        email: foundAdmin.email,
-      },
-    },
-    process.env.ACCESS_TOKEN_SECRET
-  );
-
-  const refreshToken = jwt.sign(
-    {
-      AdminInfo: {
+      info: {
         email: foundAdmin.email,
       },
     },
@@ -37,9 +37,9 @@ const adminLogin = asyncHandler(async (req, res) => {
     { expiresIn: "1d" }
   );
 
-  res.cookie("jwt", refreshToken, {
+  res.cookie("jwt", accessToken, {
     httpOnly: true,
-    sameSite: "none",
+    sameSite: "strict",
     maxAge: 24 * 60 * 60 * 1000,
   });
   res.json({ accessToken, foundAdmin });

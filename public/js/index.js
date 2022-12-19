@@ -1,12 +1,10 @@
 /* controls elements available user (canvas UI) */
 const canvasUI = {
   start: document.querySelector(".btn--start"),
-  cashAmount: document.getElementById("cashAmount"),
-  betAmount: document.getElementById("betAmount"),
 };
 
 let values = [];
-for (let i = 0; i <= 7; i++) values.push(i);
+for (let i = 0; i <= 9; i++) values.push(i);
 /* main game object */
 const GAME = {
   defCash: 100,
@@ -21,8 +19,6 @@ const canva = document.getElementById("canva");
 const ctx = canva.getContext("2d");
 
 /* init UI */
-canvasUI.cashAmount.innerHTML = GAME.cash;
-canvasUI.betAmount.innerHTML = GAME.bet;
 
 /* Settings display */
 refreshRender();
@@ -87,25 +83,26 @@ function computeDrums(width, height) {
     Game Code of simulator
   */
 
-canvasUI.start.onclick = () => {
+function addLeadingZeros(num, totalLength) {
+  return String(num).padStart(totalLength, "0");
+}
+function simulate(number) {
   canvasUI.start.disabled = true;
-  if (GAME.cash == 0) GAME.cash = GAME.defCash;
 
-  GAME.cash -= GAME.bet;
   new Animation()
     .add({
       duration: 800,
-      cb: changeCashByProgress,
+      cb: () => {},
     })
     .start();
 
   const Anim = new Animation();
   let duration = 0;
   let step = 1500;
-
+  const resultNumber = addLeadingZeros(number, 3);
   for (let i = 1; i <= 3; i++) {
-    GAME.random[i - 1] =
-      ~~(Math.random() * GAME.values.length) + GAME.values.length * i;
+    GAME.random[i - 1] = Number(resultNumber[i - 1]) + i * 10;
+
     duration += step;
     step *= 0.9;
 
@@ -132,28 +129,25 @@ canvasUI.start.onclick = () => {
         combo.push(GAME[`drum${i}`].currentValue);
       }
 
-      GAME.cash += getWinnnings(combo);
       new Animation()
         .add({
           duration: 800,
-          cb: changeCashByProgress,
+          cb: () => {},
         })
         .start();
 
       canvasUI.start.disabled = false;
     })
     .start();
-};
-
-function changeCashByProgress(progress) {
-  if (progress <= 0.5) {
-    canvasUI.cashAmount.style.opacity = 1 - progress * 2;
-  } else {
-    canvasUI.cashAmount.innerHTML = GAME.cash;
-    canvasUI.cashAmount.style.opacity = progress * 2 - 1;
-  }
 }
-
+canvasUI.start.onclick = () => {
+  // fetch("/luckynumber")
+  //   .then((res) => res.json())
+  //   .then((data) => {
+  //     simulate(data?.lucky_number);
+  //   });
+  simulate(Math.floor(Math.random() * 1000));
+};
 function getWinnnings(combo = [], bet = 10) {
   const res = checkCombo(combo);
   let defRes = 0;

@@ -1,11 +1,6 @@
 const mongoose = require("mongoose");
 
 const UserSchema = new mongoose.Schema({
-  id: {
-    type: String,
-    require: true,
-  },
-
   email: {
     type: String,
     require: true,
@@ -15,15 +10,19 @@ const UserSchema = new mongoose.Schema({
     type: String,
     require: true,
   },
+  company_id: {
+    type: String,
+    require: true,
+  },
   code: {
     type: String,
     require: true,
   },
-  luckyNumber: {
+  lucky_number: {
     type: Number,
   },
 
-  lastCheckout: {
+  last_checkout: {
     type: Date,
   },
 });

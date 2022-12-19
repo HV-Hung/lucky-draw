@@ -5,17 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Simulator one-armed bandit</title>
-    <link rel="stylesheet" href="style/style.css" />
+    <link rel="stylesheet" href="styles/style.css" />
   </head>
   <body>
     <div class="wrap">
       <button class="btn btn--start">START</button>
-      <label class="cash"
-        >Cash <span class="valute">$</span><span id="cashAmount">0</span></label
-      >
-      <label class="bet"
-        >Bet <span class="valute">$</span><span id="betAmount">0</span></label
-      >
+
       <canvas id="canva"></canvas>
     </div>
     <!--  Game API  -->
@@ -59,9 +54,9 @@
 
         draw() {
           this.ctx.save();
+          // this.ctx.fillStyle = "white";
           this.ctx.rect(this.x, this.y, this.w, this.h);
-          this.ctx.stroke();
-
+          //this.ctx.stroke();
           this.ctx.clip();
           this._drawValue();
           this.ctx.restore();
@@ -112,14 +107,17 @@
           this.ctx.textBaseline = "middle";
           this.ctx.font = `bold ${this.h}px monospace`;
           this.ctx.shadowColor = "black";
-          this.ctx.shadowBlur = 15;
+          this.ctx.shadowBlur = 0;
           this.ctx.lineWidth = 5;
+          this.ctx.fillStyle = "white";
+
+          this.ctx.fillText(text, x, y, maxWidth);
 
           this.ctx.strokeText(text, x, y, maxWidth);
 
           if (isFill) {
             this.ctx.shadowBlur = 0;
-            this.ctx.fillStyle = "white";
+            this.ctx.fillStyle = "#611796";
 
             this.ctx.fillText(text, x, y, maxWidth);
           }
