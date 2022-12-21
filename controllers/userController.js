@@ -1,7 +1,7 @@
 const User = require("../models/User");
 const asyncHandler = require("express-async-handler");
 const short = require("short-uuid");
-const { json } = require("express");
+const db = require("../config/database");
 
 const createUser = asyncHandler(async (req, res) => {
   const { email, name, company_id } = req.body;
@@ -10,12 +10,13 @@ const createUser = asyncHandler(async (req, res) => {
 
   const foundUser = await User.findOne({ email: email });
   if (foundUser) return res.status(400).json({ message: "email is existed" });
-
+  const code = short.generate();
   const user = await User.create({
     email: email,
     name: name,
-    company_id: "company_id",
-    code: short.generate(),
+    company_id: company_id,
+    code: code,
+    qr_code: `https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=${code}`,
   });
 
   if (user) {
@@ -26,10 +27,18 @@ const createUser = asyncHandler(async (req, res) => {
 });
 
 const getAllUsers = asyncHandler(async (req, res) => {
-  const users = await User.find();
-  if (!users) return res.status(400).json({ message: "No users found" });
-
-  res.json(users);
+  var sql = "select * from user";
+  var params = [];
+  db.all(sql, params, (err, rows) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: "success",
+      data: rows,
+    });
+  });
 });
 const getOneUser = asyncHandler(async (req, res) => {
   const id = req.params.id;

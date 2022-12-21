@@ -4,6 +4,7 @@ const Admin = require("../models/Admin");
 const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
+const User = require("../models/User");
 
 const router = express.Router();
 
@@ -29,6 +30,10 @@ router.get("/", (req, res) => {
 
   //   })
   // );
+});
+router.get("/user", async (req, res) => {
+  const users = await User.find();
+  res.render("user/user", { users: users });
 });
 router.get("/login", (req, res) => {
   const cookies = req.cookies;

@@ -141,12 +141,12 @@ function simulate(number) {
     .start();
 }
 canvasUI.start.onclick = () => {
-  // fetch("/luckynumber")
-  //   .then((res) => res.json())
-  //   .then((data) => {
-  //     simulate(data?.lucky_number);
-  //   });
-  simulate(Math.floor(Math.random() * 1000));
+  fetch("/luckynumber")
+    .then((res) => res.json())
+    .then((data) => {
+      simulate(data?.lucky_number);
+    });
+  // simulate(Math.floor(Math.random() * 1000));
 };
 function getWinnnings(combo = [], bet = 10) {
   const res = checkCombo(combo);

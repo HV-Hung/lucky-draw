@@ -116,8 +116,10 @@
           this.ctx.strokeText(text, x, y, maxWidth);
 
           if (isFill) {
-            this.ctx.shadowBlur = 0;
-            this.ctx.fillStyle = "#611796";
+            this.ctx.shadowBlur = 35;
+            this.ctx.shadowColor = "#d2ae22";
+
+            this.ctx.fillStyle = "#ffe066";
 
             this.ctx.fillText(text, x, y, maxWidth);
           }

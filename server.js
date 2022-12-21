@@ -9,6 +9,7 @@ const corsOptions = require("./config/corsOptions");
 const connectDB = require("./config/dbConn");
 const mongoose = require("mongoose");
 const PORT = process.env.PORT || 3500;
+const db = require("./config/database");
 //connect mongodb
 connectDB();
 
@@ -23,10 +24,24 @@ app.use("/", express.static(path.join(__dirname, "/public")));
 
 // Routers
 app.use("/", require("./routes/root"));
+app.get("/api/admin", (req, res, next) => {
+  var sql = "select * from admin";
+  var params = [];
+  db.all(sql, params, (err, rows) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: "success",
+      data: rows,
+    });
+  });
+});
 
-app.use("/admin", require("./routes/adminRoutes"));
-app.use("/auth", require("./routes/authRoutes"));
-app.use("/user", require("./routes/userRotes"));
+app.use("/api/admin", require("./routes/adminRoutes"));
+app.use("/api/auth", require("./routes/authRoutes"));
+app.use("/api/user", require("./routes/userRotes"));
 app.use(errorHandler);
 mongoose.connection.once("open", () => {
   console.log("Connected to MongoDB");

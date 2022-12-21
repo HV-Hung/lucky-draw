@@ -22,6 +22,10 @@ const UserSchema = new mongoose.Schema({
     type: Number,
   },
 
+  qr_code: {
+    type: String,
+    require: true,
+  },
   last_checkout: {
     type: Date,
   },

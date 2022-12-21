@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Users</title>
+    <link rel="stylesheet" href="styles/user.css" />
+  </head>
+  <body>
+    <main>
+      <div class="table-wrapper">
+        <table id="paginatedTable">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Company ID</th>
+              <th>Code</th>
+              <th>Lucky number</th>
+              <th>Last Checkout</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% for(let user of users ){ %>
+            <tr>
+              <td><%= user.name %></td>
+              <td><%= user.email %></td>
+              <td><%= user.company_id %></td>
+              <td><%= user.code %></td>
+              <td><%= user.lucky_number %></td>
+              <td><%= user.last_checkout %></td>
+            </tr>
+            <%} %>
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination">
+        <button class="backward" id="first">first</button>
+        <button class="backward" id="prev">previous</button>
+        <button class="forward" id="next">next</button>
+        <button class="forward" id="last">last</button>
+        <div class="page-numbers" id="pageNumbers"></div>
+      </div>
+    </main>
+    <script src="js/user.js"></script>
+  </body>
+</html>
