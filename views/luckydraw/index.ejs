@@ -10,10 +10,16 @@
   <body>
     <div class="wrap">
       <button class="game-button red btn--start">START</button>
-
       <canvas id="canva"></canvas>
       <div id="lucky-user" class="hide">
-        <p id="lucky-username" class="thanks"></p>
+        <div class="container">
+          <button
+            type="button"
+            id="lucky-username"
+            class="btn-lucky-user "
+          ></button>
+        </div>
+        <!-- <p id="lucky-username" class="thanks"></p> -->
       </div>
       <a href="/user"><button class="user-btn">Users</button></a>
     </div>
@@ -120,10 +126,10 @@
           this.ctx.strokeText(text, x, y, maxWidth);
 
           if (isFill) {
-            this.ctx.shadowBlur = 35;
-            this.ctx.shadowColor = "#d2ae22";
+            this.ctx.shadowBlur = 15;
+            // this.ctx.shadowColor = "#d2ae22";
 
-            this.ctx.fillStyle = "#ffe066";
+            this.ctx.fillStyle = "yellow";
 
             this.ctx.fillText(text, x, y, maxWidth);
           }

@@ -82,7 +82,7 @@ function addLeadingZeros(num, totalLength) {
 }
 function simulate(data) {
   canvasUI.start.disabled = true;
-
+  luckyUserElement.classList.add("hide")
   new Animation()
     .add({
       duration: 800,
@@ -129,7 +129,7 @@ function simulate(data) {
           cb: () => {},
         })
         .start();
-      infoElement.textContent = data.name;
+      infoElement.textContent = data.name+ " " +data.email;
       luckyUserElement.classList.remove("hide");
 
       canvasUI.start.disabled = false;
@@ -199,3 +199,6 @@ function checkCombo(combo = []) {
 
   return res;
 }
+
+
+
