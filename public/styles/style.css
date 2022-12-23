@@ -56,7 +56,20 @@ canvas {
   width: 100vw;
   background: transparent;
 }
-
+.user-btn{
+  width: 100px;
+  height: 50px;
+  position: absolute;
+  top: 2%;
+  right: 1%;
+  cursor: pointer;
+  text-decoration: none !important;
+  outline: none !important;
+  font-family: "Carter One", sans-serif;
+  font-size: 20px;
+  line-height: 1.5em;
+  letter-spacing: 0.1em;
+}
 .thanks {
   font-family: "Philosopher", sans-serif;
   width: 100vw;
@@ -152,3 +165,5 @@ canvas {
     0 8px 0 5px #831614, 0 10px 0 5px #a33634, 0 13px 0 5px #631716,
     0 13px 1px 6px rgba(0, 0, 0, 0.3);
 }
+
+

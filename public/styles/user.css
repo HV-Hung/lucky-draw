@@ -165,3 +165,17 @@ button:hover {
 .modal-confirm .btn-danger:focus {
   background: #ee3535;
 }
+.user-btn{
+  width: 100px;
+  height: 50px;
+  position: absolute;
+  top: 2%;
+  right: 1%;
+  cursor: pointer;
+  text-decoration: none !important;
+  outline: none !important;
+  font-family: "Carter One", sans-serif;
+  font-size: 20px;
+  line-height: 1.5em;
+  letter-spacing: 0.1em;
+}

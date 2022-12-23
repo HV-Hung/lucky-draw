@@ -64,7 +64,7 @@ function computeDrums(width, height) {
     ctx,
   };
   drumOpts.x = (width * 0.25) / 2;
-  drumOpts.y = height * 0.3 + canvasUI.start.clientHeight / 2;
+  drumOpts.y = height * 0.1 + canvasUI.start.clientHeight / 2;
 
   GAME.drum1 = GAME.drum1 ? GAME.drum1.setting(drumOpts) : new Drum(drumOpts);
   drumOpts.x += drumOpts.w;

@@ -144,8 +144,15 @@ const userCheckIn = asyncHandler(async (req, res) => {
           (err) => {
             if (err) {
               return console.error(err.message);
+            }else {
+              db.get(
+                "select * from user where id = ?",
+                id,
+                (err, user) => {
+                  res.status(200).json(user);
+                }
+              );
             }
-            res.status(200).json("user check in successfully");
           }
         );
       } else {
@@ -177,8 +184,15 @@ const userCheckIn = asyncHandler(async (req, res) => {
             (err) => {
               if (err) {
                 return console.error(err.message);
+              } else {
+                db.get(
+                  "select * from user where id = ?",
+                  id,
+                  (err, user) => {
+                    res.status(200).json(user);
+                  }
+                );
               }
-              res.status(200).json("user check in successfully");
             }
           );
         });
