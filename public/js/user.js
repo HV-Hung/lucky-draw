@@ -9,6 +9,19 @@ const nextBtn = document.getElementById("next");
 const numberOfPages = getNumberOfPages();
 const pageNumbers = document.getElementById("pageNumbers");
 
+const modal = document.getElementById("myModal");
+const userId = document.getElementById("user-id");
+const box = document.getElementById("box");
+const handleDeleteUser = (e) => {
+  box.classList.add("non-select");
+  modal.classList.remove("hidden");
+  userId.value = e;
+};
+const cancelDelete = () => {
+  modal.classList.add("hidden");
+  box.classList.remove("non-select");
+};
+
 firstBtn.addEventListener("click", firstPage, false);
 lastBtn.addEventListener("click", lastPage, false);
 prevBtn.addEventListener("click", prevPage, false);

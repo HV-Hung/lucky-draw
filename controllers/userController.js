@@ -2,36 +2,91 @@ const User = require("../models/User");
 const asyncHandler = require("express-async-handler");
 const short = require("short-uuid");
 const db = require("../config/database");
+const XLSX = require("xlsx");
+var fs = require("fs");
 
 const createUser = asyncHandler(async (req, res) => {
   const { email, name, company_id } = req.body;
   if (!email || !name || !company_id)
     return res.status(400).json("email, name, company_id are required!");
 
-  const foundUser = await User.findOne({ email: email });
-  if (foundUser) return res.status(400).json({ message: "email is existed" });
   const code = short.generate();
-  const user = await User.create({
-    email: email,
-    name: name,
-    company_id: company_id,
-    code: code,
-    qr_code: `https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=${code}`,
+  const qr_code = `https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=${code}`;
+
+  db.serialize(() => {
+    db.get("select * from user where email = ?", email, (err, user) => {
+      if (user) {
+        req.flash("error", "Email already exists");
+        res.redirect("/user");
+      } else {
+        db.get(
+          "select * from user where company_id = ?",
+          company_id,
+          (err, user) => {
+            if (user) {
+              req.flash("error", "Company already exists");
+              res.redirect("/user");
+            } else {
+              db.run(
+                `INSERT INTO user(id,email,name,company_id,qr_code) VALUES(?,?,?,?,?)`,
+                [code, email, name, company_id, qr_code],
+                function (err) {
+                  if (err) {
+                    req.flash("error", err.message);
+                  }
+                  res.redirect("/user");
+                }
+              );
+            }
+          }
+        );
+      }
+    });
+  });
+});
+const importUser = (req, res) => {
+  // console.log(req.file);
+  var workbook = XLSX.readFile(req.file.path);
+  var sheet_name_list = workbook.SheetNames;
+  const users = XLSX.utils
+    .sheet_to_json(workbook.Sheets[sheet_name_list[0]])
+    .map((user) => {
+      const code = short.generate();
+      const qr_code = `https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=${code}`;
+
+      return Object.values({
+        ...user,
+        qr_code,
+        code,
+      });
+    });
+
+  let sql =
+    "INSERT INTO user(name, email,company_id, qr_code, id) VALUES " +
+    users
+      .map((item) => {
+        const itemc = item.map((item2) => {
+          return `"${item2}"`;
+        });
+        return `( ${itemc.toString()} )`;
+      })
+      .toString();
+
+  db.run(sql, (err) => {
+    if (err) {
+      req.flash("error", "Email and company id must be unique");
+    }
+    res.redirect("/user");
   });
 
-  if (user) {
-    res.status(201).json({ message: `${email} register successfully` });
-  } else {
-    res.status(400);
-  }
-});
-
+  fs.unlinkSync(req.file.path);
+};
 const getAllUsers = asyncHandler(async (req, res) => {
   var sql = "select * from user";
   var params = [];
   db.all(sql, params, (err, rows) => {
     if (err) {
-      res.status(400).json({ error: err.message });
+      res.status(400).json({ importError: err.message });
       return;
     }
     res.json({
@@ -63,47 +118,90 @@ const updateUser = asyncHandler(async (req, res) => {
 });
 
 const deleteUser = asyncHandler(async (req, res) => {
-  const id = req.params.id;
-  if (!id) return res.status(400).json("User id is required!");
-  const user = await User.findById(id).exec();
-  if (!user) return res.status(400).json({ message: "User not found" });
-  user.active = false;
-  user.save();
+  const id = req.body.id;
 
-  res.json(`${result.name} is deleted!`);
-});
-const userCheckout = asyncHandler(async (req, res) => {
-  const code = req.params.code;
-  const maxNumberOfUsers = 1000;
-
-  const user = await User.findOne({ code: code });
-  if (!user) return res.status(400).json({ message: "user not found" });
-
-  const usersHaveLuckyNumbers = await User.find({
-    lucky_number: { $exists: true },
-  });
-  if (usersHaveLuckyNumbers.length > maxNumberOfUsers)
-    return res.json("No lucky number");
-
-  let luckyNumber = Math.floor(Math.random() * maxNumberOfUsers);
-  if (!user.lucky_number) {
-    let users = await User.find({ lucky_number: luckyNumber });
-    while (users.length > 0) {
-      luckyNumber = Math.floor(Math.random() * maxNumberOfUsers);
-      users = await User.find({ lucky_number: luckyNumber });
+  db.run("DELETE FROM user WHERE id = ?", id, function (err) {
+    if (err) {
+      res.redirect("/user");
     }
-    user.lucky_number = luckyNumber;
-  }
+    res.redirect("/user");
+  });
+});
+const userCheckIn = asyncHandler(async (req, res) => {
+  const id = req.params.id;
+  const maxNumberOfUsers = 999;
+  let luckyNumber = Math.floor(Math.random() * maxNumberOfUsers) + 1;
+  const date = new Date().toLocaleString();
 
-  user.last_checkout = Date.now();
-  const newUser = await user.save();
-  res.json(newUser);
+  db.serialize(() => {
+    db.get("select * from user where id = ?", id, (err, user) => {
+      if (!user) {
+        return res.status(400).json("no user found");
+      } else if (user.lucky_number) {
+        db.run(
+          `UPDATE user set  last_check_in= ? where id = ?`,
+          [date, id],
+          (err) => {
+            if (err) {
+              return console.error(err.message);
+            }
+            res.status(200).json("user check in successfully");
+          }
+        );
+      } else {
+        db.serialize(() => {
+          db.all(
+            "select lucky_number from user where lucky_number IS not NULL ",
+            [],
+            (err, users) => {
+              if (err) {
+                return console.error(err.message);
+              }
+              console.log({ users });
+              if (users.length > 0) {
+                while (
+                  users.filter((user) => user.lucky_number == luckyNumber)
+                    .length > 0
+                ) {
+                  luckyNumber =
+                    Math.floor(Math.random() * maxNumberOfUsers) + 1;
+                }
+              }
+            }
+          );
+        });
+        db.serialize(() => {
+          db.run(
+            `UPDATE user set lucky_number = ?, last_check_in= ? where id = ?`,
+            [luckyNumber, date, id],
+            (err) => {
+              if (err) {
+                return console.error(err.message);
+              }
+              res.status(200).json("user check in successfully");
+            }
+          );
+        });
+      }
+    });
+  });
 });
 const drawLuckyNumber = asyncHandler(async (req, res) => {
-  const users = await User.find({ lucky_number: { $exists: true } });
-  if (!users) return res.status(400).json({ message: "user not found" });
-  const luckyUser = users[Math.floor(Math.random() * users.length)];
-  res.json(luckyUser);
+  db.serialize(() => {
+    db.all(
+      "select * from user where lucky_number IS not NULL ",
+      [],
+      (err, users) => {
+        if (err) {
+          return console.error(err.message);
+        }
+        if (users.length > 0) {
+          const luckyUser = users[Math.floor(Math.random() * users.length)];
+          res.json(luckyUser);
+        } else res.json("no user");
+      }
+    );
+  });
 });
 
 module.exports = {
@@ -112,6 +210,7 @@ module.exports = {
   getOneUser,
   updateUser,
   deleteUser,
-  userCheckout,
+  userCheckIn,
   drawLuckyNumber,
+  importUser,
 };

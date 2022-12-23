@@ -1,62 +1,27 @@
 const express = require("express");
 const userController = require("../controllers/userController");
-const Admin = require("../models/Admin");
-const asyncHandler = require("express-async-handler");
-const jwt = require("jsonwebtoken");
 require("dotenv").config();
-const User = require("../models/User");
+const configPassport = require("../config/passport-config");
+const db = require("../config/database");
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
+router.get("/", configPassport.checkAuthenticated, (req, res) => {
   res.render("luckydraw/index");
-  // const cookies = req.cookies;
-
-  // if (!cookies?.jwt) return res.render("auth/login");
-
-  // const accessToken = cookies.jwt;
-
-  // jwt.verify(
-  //   accessToken,
-  //   process.env.REFRESH_TOKEN_SECRET,
-  //   asyncHandler(async (err, decoded) => {
-  //     if (err) return res.status(403).json({ message: "Forbidden" });
-
-  //     const foundAdmin = await Admin.findOne({
-  //       email: decoded.info.email,
-  //     });
-
-  //     if (!foundAdmin) return res.render("auth/login");
-
-  //   })
-  // );
 });
-router.get("/user", async (req, res) => {
-  const users = await User.find();
-  res.render("user/user", { users: users });
+router.get("/user", configPassport.checkAuthenticated, (req, res) => {
+  var sql = "select * from user";
+  var params = [];
+  db.all(sql, params, (err, rows) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.render("user/user", { users: rows });
+  });
 });
-router.get("/login", (req, res) => {
-  const cookies = req.cookies;
-
-  if (!cookies?.jwt) return res.render("auth/login");
-
-  const accessToken = cookies.jwt;
-
-  jwt.verify(
-    accessToken,
-    process.env.REFRESH_TOKEN_SECRET,
-    asyncHandler(async (err, decoded) => {
-      if (err) return res.status(403).json({ message: "Forbidden" });
-
-      const foundAdmin = await Admin.findOne({
-        email: decoded.info.email,
-      });
-
-      if (!foundAdmin) return res.render("auth/login");
-
-      res.render("luckydraw/index");
-    })
-  );
+router.get("/login", configPassport.checkNotAuthenticated, (req, res) => {
+  res.render("auth/login");
 });
 router.get("/luckynumber", userController.drawLuckyNumber);
 

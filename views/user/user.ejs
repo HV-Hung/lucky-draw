@@ -9,6 +9,37 @@
   </head>
   <body>
     <main>
+      <div class="box" id="box">
+        <form action="/api/user" method="POST" class="add-user">
+          <% if (messages.error) { %>
+          <p class="messages"><%= messages.error %></p>
+          <% } %>
+          <input type="text" name="name" placeholder="Full name" required />
+          <input type="email" name="email" placeholder="Email" required />
+
+          <input
+            type="text"
+            name="company_id"
+            placeholder="Company id"
+            required
+          />
+          <button type="submit">Add user</button>
+        </form>
+        <form
+          action="/api/user/import"
+          enctype="multipart/form-data"
+          method="POST"
+          class="add-user"
+        >
+          <% if (messages.importError) { %>
+          <p class="messages"><%= messages.importError %></p>
+          <% } %>
+
+          <input type="file" name="csvFile" accept=".csv" required />
+          <button type="submit">Import csv</button>
+        </form>
+      </div>
+
       <div class="table-wrapper">
         <table id="paginatedTable">
           <thead>
@@ -18,7 +49,8 @@
               <th>Company ID</th>
               <th>Code</th>
               <th>Lucky number</th>
-              <th>Last Checkout</th>
+              <th>Last check in</th>
+              <th>Delete</th>
             </tr>
           </thead>
           <tbody>
@@ -27,9 +59,14 @@
               <td><%= user.name %></td>
               <td><%= user.email %></td>
               <td><%= user.company_id %></td>
-              <td><%= user.code %></td>
+              <td><a href=<%="https://api.qrserver.com/v1/create-qr-code/?size=350x350&data="+user.id%> target="_blank"><%= user.id %></a></td>
               <td><%= user.lucky_number %></td>
-              <td><%= user.last_checkout %></td>
+              <td><%= user.last_check_in %></td>
+              <td>
+                <button onclick="handleDeleteUser(`<%=user.id%>`)">
+                  Delete
+                </button>
+              </td>
             </tr>
             <%} %>
           </tbody>
@@ -43,6 +80,37 @@
         <div class="page-numbers" id="pageNumbers"></div>
       </div>
     </main>
+
+    <div id="myModal" class="modal hidden">
+      <div class="modal-dialog modal-confirm">
+        <div class="modal-content">
+          <div class="modal-header flex-column">
+            <h4 class="modal-title w-100">Are you sure?</h4>
+          </div>
+          <div class="modal-body">
+            <p>Do you really want to delete this user?</p>
+          </div>
+          <div>
+            <form
+              action="/api/user/delete"
+              method="POST"
+              class="modal-footer justify-content-center"
+            >
+              <input type="hidden" id="user-id" name="id" />
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+                onclick="cancelDelete()"
+              >
+                Cancel
+              </button>
+              <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
     <script src="js/user.js"></script>
   </body>
 </html>

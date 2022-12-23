@@ -27,19 +27,128 @@ canvas {
 
 .btn {
   position: absolute;
-  top: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
   background: #ffffff;
   color: rgb(0, 0, 0);
-  border-radius: 0.125rem;
+  border-radius: 1rem;
   cursor: pointer;
   z-index: 10;
+  left: 50%;
+  transform: translateX(-50%);
 }
-
+.hide {
+  display: none;
+}
 .btn--start {
-  top: 5%;
+  bottom: 20%;
   font-family: serif;
   font-weight: bold;
+  width: 100px;
+  height: 50px;
+}
+#lucky-user {
+  position: absolute;
+  top: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
+  background: transparent;
+}
+
+.thanks {
+  font-family: "Philosopher", sans-serif;
+  width: 100vw;
+  font-size: 12vmin;
+  font-family: "Fruktur", cursive;
+  color: #ffffff;
+  text-align: center;
+  font-weight: bold;
+  text-shadow: 0px 1px 0px #c0c0c0, 0px 2px 0px #b0b0b0, 0px 3px 0px #a0a0a0,
+    0px 4px 0px #909090, 0px 5px 10px rgba(0, 0, 0, 0.6);
+}
+.game-button {
+  width: 230px;
+  height: 100px;
+  position: absolute;
+  bottom: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+  cursor: pointer;
+  text-decoration: none !important;
+  outline: none !important;
+  font-family: "Carter One", sans-serif;
+  font-size: 40px;
+  line-height: 1.5em;
+  letter-spacing: 0.1em;
+  text-shadow: 2px 2px 1px #0066a2, -2px 2px 1px #0066a2, 2px -2px 1px #0066a2,
+    -2px -2px 1px #0066a2, 0px 2px 1px #0066a2, 0px -2px 1px #0066a2,
+    0px 4px 1px #004a87, 2px 4px 1px #004a87, -2px 4px 1px #004a87;
+  border: none;
+  margin: 15px 15px 30px;
+  background: repeating-linear-gradient(
+    45deg,
+    #3ebbf7,
+    #3ebbf7 5px,
+    #45b1f4 5px,
+    #45b1f4 10px
+  );
+  border-bottom: 3px solid rgba(16, 91, 146, 0.5);
+  border-top: 3px solid rgba(255, 255, 255, 0.3);
+  color: #fff !important;
+  border-radius: 8px;
+  padding: 8px 15px 10px;
+  box-shadow: 0 6px 0 #266b91, 0 8px 1px 1px rgba(0, 0, 0, 0.3),
+    0 10px 0 5px #12517d, 0 12px 0 5px #1a6b9a, 0 15px 0 5px #0c405e,
+    0 15px 1px 6px rgba(0, 0, 0, 0.3);
+}
+.game-button:hover {
+  bottom: calc(5% - 2px);
+  box-shadow: 0 4px 0 #266b91, 0 6px 1px 1px rgba(0, 0, 0, 0.3),
+    0 8px 0 5px #12517d, 0 10px 0 5px #1a6b9a, 0 13px 0 5px #0c405e,
+    0 13px 1px 6px rgba(0, 0, 0, 0.3);
+}
+.game-button::before {
+  content: "";
+  height: 10%;
+  position: absolute;
+  width: 40%;
+  background: #fff;
+  right: 13%;
+  top: -3%;
+  border-radius: 99px;
+}
+.game-button::after {
+  content: "";
+  height: 10%;
+  position: absolute;
+  width: 5%;
+  background: #fff;
+  right: 5%;
+  top: -3%;
+  border-radius: 99px;
+}
+
+.game-button.red {
+  background: repeating-linear-gradient(
+    45deg,
+    #ff4f4c,
+    #ff4f4c 5px,
+    #ff4643 5px,
+    #ff4643 10px
+  );
+  box-shadow: 0 6px 0 #ae2725, 0 8px 1px 1px rgba(0, 0, 0, 0.3),
+    0 10px 0 5px #831614, 0 12px 0 5px #a33634, 0 15px 0 5px #631716,
+    0 15px 1px 6px rgba(0, 0, 0, 0.3);
+  border-bottom: 3px solid rgba(160, 25, 23, 0.5);
+  text-shadow: 2px 2px 1px #d72d21, -2px 2px 1px #d72d21, 2px -2px 1px #d72d21,
+    -2px -2px 1px #d72d21, 0px 2px 1px #d72d21, 0px -2px 1px #d72d21,
+    0px 4px 1px #930704, 2px 4px 1px #930704, -2px 4px 1px #930704;
+}
+.game-button.red:hover {
+  bottom: calc(5% - 2px);
+  box-shadow: 0 4px 0 #ae2725, 0 6px 1px 1px rgba(0, 0, 0, 0.3),
+    0 8px 0 5px #831614, 0 10px 0 5px #a33634, 0 13px 0 5px #631716,
+    0 13px 1px 6px rgba(0, 0, 0, 0.3);
 }

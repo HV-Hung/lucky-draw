@@ -26,7 +26,7 @@ const UserSchema = new mongoose.Schema({
     type: String,
     require: true,
   },
-  last_checkout: {
+  last_check_in: {
     type: Date,
   },
 });

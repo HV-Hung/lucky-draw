@@ -2,6 +2,8 @@
 const canvasUI = {
   start: document.querySelector(".btn--start"),
 };
+const luckyUserElement = document.getElementById("lucky-user");
+const infoElement = document.getElementById("lucky-username");
 
 let values = [];
 for (let i = 0; i <= 9; i++) values.push(i);
@@ -27,7 +29,6 @@ window.onresize = refreshRender;
 
 function refreshRender() {
   setDisplayCanvas();
-  setDisplayCanvasUI();
   computePosElems();
   renderCanvas(); // because canvas will reset
 }
@@ -38,14 +39,7 @@ function setDisplayCanvas() {
   canva.height = (canva.width * 3) / 4;
 }
 /* Settings display canvas UI elements */
-function setDisplayCanvasUI() {
-  /* Button Start */
-  let btnStartFSize = canva.width / 25;
-  canvasUI.start.style.fontSize = btnStartFSize + "px";
-  canvasUI.start.style.padding = `${btnStartFSize / 4}px ${btnStartFSize}px`;
-  canvasUI.start.style.left =
-    canva.width / 2 - canvasUI.start.clientWidth / 2 + "px";
-}
+
 /* Display current state on canvas */
 function renderCanvas() {
   // это в отличии от clearRect помогает избедать потери fps
@@ -70,7 +64,7 @@ function computeDrums(width, height) {
     ctx,
   };
   drumOpts.x = (width * 0.25) / 2;
-  drumOpts.y = height * 0.2 + canvasUI.start.clientHeight / 2;
+  drumOpts.y = height * 0.3 + canvasUI.start.clientHeight / 2;
 
   GAME.drum1 = GAME.drum1 ? GAME.drum1.setting(drumOpts) : new Drum(drumOpts);
   drumOpts.x += drumOpts.w;
@@ -86,7 +80,7 @@ function computeDrums(width, height) {
 function addLeadingZeros(num, totalLength) {
   return String(num).padStart(totalLength, "0");
 }
-function simulate(number) {
+function simulate(data) {
   canvasUI.start.disabled = true;
 
   new Animation()
@@ -99,7 +93,7 @@ function simulate(number) {
   const Anim = new Animation();
   let duration = 0;
   let step = 1500;
-  const resultNumber = addLeadingZeros(number, 3);
+  const resultNumber = addLeadingZeros(data?.lucky_number, 3);
   for (let i = 1; i <= 3; i++) {
     GAME.random[i - 1] = Number(resultNumber[i - 1]) + i * 10;
 
@@ -135,6 +129,8 @@ function simulate(number) {
           cb: () => {},
         })
         .start();
+      infoElement.textContent = data.name;
+      luckyUserElement.classList.remove("hide");
 
       canvasUI.start.disabled = false;
     })
@@ -144,7 +140,7 @@ canvasUI.start.onclick = () => {
   fetch("/luckynumber")
     .then((res) => res.json())
     .then((data) => {
-      simulate(data?.lucky_number);
+      simulate(data);
     });
   // simulate(Math.floor(Math.random() * 1000));
 };
